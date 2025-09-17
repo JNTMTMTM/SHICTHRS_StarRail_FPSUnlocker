@@ -1,36 +1,210 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>srf</class>
+ <widget class="QWidget" name="srf">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>380</width>
-    <height>130</height>
+    <width>379</width>
+    <height>149</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>10000</width>
+    <height>1245124</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>SHICTHRS-SFR</string>
   </property>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QTabWidget" name="tw_main">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>90</y>
-     <width>341</width>
-     <height>31</height>
+     <x>0</x>
+     <y>0</y>
+     <width>381</width>
+     <height>151</height>
     </rect>
    </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-     <bold>true</bold>
-    </font>
+   <property name="currentIndex">
+    <number>1</number>
    </property>
-   <property name="text">
-    <string>一键解锁</string>
-   </property>
+   <widget class="QWidget" name="index_0">
+    <attribute name="title">
+     <string>解锁帧率</string>
+    </attribute>
+    <widget class="QPushButton" name="pbtn_index_0_unlock_fps">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>92</y>
+       <width>341</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>一键解锁</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lb_index_0_graphics_index">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>341</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>图形设置引导 : 等待加载</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lb_index_0_regedit_path">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>341</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>注册表路径 : 等待加载</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lb_index_0_current_fps">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>341</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>当前帧率 : 等待加载</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="rb_index_0_unlock_120fps">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>70</y>
+       <width>95</width>
+       <height>19</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>解锁120帧</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="rb_index_0_rlb_60fps">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>70</y>
+       <width>95</width>
+       <height>19</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>回滚至60帧</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="index_1">
+    <attribute name="title">
+     <string>工具</string>
+    </attribute>
+    <widget class="QLabel" name="lb_index_1_version_info">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>341</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>版本信息 : 等待加载</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lb_index_1_github_link">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>341</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;仓库地址 : 等待加载&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pbtn_index_1_start_game">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>50</y>
+       <width>341</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>启动游戏</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pbtn_index_1_restart_system">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>73</y>
+       <width>341</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>重启系统</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pbtn_index_1_quit">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>96</y>
+       <width>341</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>安全退出</string>
+     </property>
+    </widget>
+   </widget>
   </widget>
  </widget>
  <resources/>
