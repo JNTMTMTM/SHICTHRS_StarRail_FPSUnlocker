@@ -77,7 +77,7 @@ class Ui_srf(object):
 
         self.retranslateUi(srf)
 
-        self.tw_main.setCurrentIndex(1)
+        self.tw_main.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(srf)
