@@ -22,7 +22,7 @@ from PySide6.QtWidgets import (QApplication , QMainWindow , QMessageBox)
 from PySide6 import QtGui
 from ui.sfr_ui import Ui_srf
 # 导入解锁方法
-from utils.unlocker.srf_fps_unlocker import srf_fps_unlocker
+from utils.unlocker.srf_fps_unlocker import SrfFpsUnlocker
 # 导入json io方法
 from utils.json.srf_read_json import ReadJsonFile
 from utils.json.srf_verify_json import VerifySacJfpOrder
@@ -54,7 +54,7 @@ class sfr_gui(Ui_srf , QMainWindow):
 
     # 绑定槽函数
     def __slot__(self) -> None:
-        pass
+        self.pbtn_index_0_unlock_fps.clicked.connect(self.__res_pbtn_index_0_unlock_fps)
 
     # 加载软件信息
     def LoadRegeditInfo(self) -> None:
@@ -100,6 +100,19 @@ class sfr_gui(Ui_srf , QMainWindow):
 
     # 加载当前游戏FPS上限
     def LoadCurrentGameFPSLimit(self) -> None:
+        """
+        加载当前游戏FPS上限(ALV-JSON) <-> SAC_JFP VERIFICATION
+        temp_value -> None
+        temp_format_value -> var.SRF_REGEDIT_INFO(DC)
+
+        GUI-LOADED -> lb_index_0_current_fps
+            [+] pbtn_index_0_unlock_fps
+            [+] rb_index_0_unlock_120fps
+            [+] rb_index_0_rlb_60fps
+
+        param : None
+        return : None
+        """
         try:
             temp_value : dict = {}  # 创建临时加载空间
             temp_format_value : dict = {}  # 创建临时格式化加载空间
@@ -129,6 +142,34 @@ class sfr_gui(Ui_srf , QMainWindow):
             QMessageBox.critical(self , 'SRF-错误' , f'注册表读取失败 , 请下载游戏或验证游戏目录完整性。\n错误信息 : {e}')
             self.__quit()  # 退出方法
 
+    # 响应 pbtn_index_0_unlock_fps 点击信号 解锁FPS
+    def __res_pbtn_index_0_unlock_fps(self) -> None:
+        """
+        响应 pbtn_index_0_unlock_fps(ALV-JSON) 点击信号 <-> 解锁FPS
+
+        FUNC-LOADED -> LoadRegeditInfo
+            [+] LoadCurrentGameFPSLimit
+            
+        param : None
+        return : None
+        """
+        if self.rb_index_0_unlock_120fps.isChecked():  # 用户选择120FPS
+            try:
+                SrfFpsUnlocker(var , 120)
+                QMessageBox.information(self , 'SRF-提示' , 'FPS解锁成功 , 重启游戏生效。')
+            except Exception as e:
+                QMessageBox.critical(self , 'SRF-错误' , f'FPS解锁失败 , 请检查游戏目录完整性。\n错误信息 : {e}')
+
+        else:  # 用户选择60FPS
+            try:
+                SrfFpsUnlocker(var , 60)
+                QMessageBox.information(self , 'SRF-提示' , 'FPS解锁成功 , 重启游戏生效。')
+            except Exception as e:
+                QMessageBox.critical(self , 'SRF-错误' , f'FPS解锁失败 , 请检查游戏目录完整性。\n错误信息 : {e}')
+        
+        self.LoadRegeditInfo()
+        self.LoadCurrentGameFPSLimit()
+        
 
     # 退出
     def __quit(self) -> None:
