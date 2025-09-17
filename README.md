@@ -5,7 +5,7 @@
 
 ## 部署方式
 1. **下载预编译版本**：
-   - 从 [GitHub Releases](https://github.com/SHICTHRS/StarRail_FPSUnlocker/releases) 下载最新的预编译版本。
+   - 从 [GitHub Releases](https://github.com/JNTMTMTM/SHICTHRS_StarRail_FPSUnlocker/releases) 下载最新的预编译版本。
    - 解压到任意目录。
 
 2. **运行工具**：
