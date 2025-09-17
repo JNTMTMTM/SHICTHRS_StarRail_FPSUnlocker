@@ -159,9 +159,9 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
         else:  # 用户选择60FPS
             try:
                 SrfFpsUnlocker(var , 60)
-                QMessageBox.information(self , 'SRF-提示' , 'FPS解锁成功 , 重启游戏生效。')
+                QMessageBox.information(self , 'SRF-提示' , 'FPS回滚成功 , 重启游戏生效。')
             except Exception as e:
-                QMessageBox.critical(self , 'SRF-错误' , f'FPS解锁失败 , 请检查游戏目录完整性。\n错误信息 : {e}')
+                QMessageBox.critical(self , 'SRF-错误' , f'FPS回滚失败 , 请检查游戏目录完整性。\n错误信息 : {e}')
         
         self.LoadRegeditInfo()
         self.LoadCurrentGameFPSLimit()
