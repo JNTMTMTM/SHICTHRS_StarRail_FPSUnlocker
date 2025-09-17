@@ -65,29 +65,35 @@ class sfr_gui(Ui_srf , QMainWindow):
         param : None
         return : None
         """
+        try:
+            temp_dict : dict = {}  # json临时加载空间
+            temp_dict = ReadJsonFile(os.path.join(var.PATH , 'config' , 'srf_info.json'))  # 读取json文件
+            
+            # SAC_JFP校验
+            if VerifySacJfpOrder(temp_dict):  # 校验通过
+                var.SRF_INFO = deepcopy(temp_dict)
+                del temp_dict  # 释放临时空间
 
-        temp_dict : dict = {}  # json临时加载空间
-        temp_dict = ReadJsonFile(os.path.join(var.PATH , 'config' , 'srf_info.json'))  # 读取json文件
-        
-        # SAC_JFP校验
-        if VerifySacJfpOrder(temp_dict):  # 校验通过
-            var.SRF_INFO = deepcopy(temp_dict)
-            del temp_dict  # 释放临时空间
+                # 向控件加载软件信息
+                self.lb_index_0_regedit_path.setText('注册表路径 : ' + os.path.join(*var.SRF_INFO['PATH']['REGISTRY_KEY_PATH']))  # 注册表路径
+                self.lb_index_0_graphics_index.setText('图形设置引导 : ' + var.SRF_INFO['PATH']['GRAPHICS_VALUE_NAME'])  # 图形设置引导
+                self.lb_index_1_version_info.setText(f'版本信息 : {var.SRF_INFO['VERSION']['VERSION_INDEX']} - {var.SRF_INFO['VERSION']['UPDATE_TIME']}')  # 版本信息
+                self.lb_index_1_github_link.setText(f'<a href="{var.SRF_INFO['PATH']['GITHUB_REPO_URL']}">项目地址 : {var.SRF_INFO['PATH']['GITHUB_REPO_URL'].split('/')[-1]}</a>')  # 项目地址
+                self.lb_index_1_github_link.setOpenExternalLinks(True)  # 激活超链接
 
-            # 向控件加载软件信息
-            self.lb_index_0_regedit_path.setText('注册表路径 : ' + os.path.join(*var.SRF_INFO['PATH']['REGISTRY_KEY_PATH']))  # 注册表路径
-            self.lb_index_0_graphics_index.setText('图形设置引导 : ' + var.SRF_INFO['PATH']['GRAPHICS_VALUE_NAME'])  # 图形设置引导
-            self.lb_index_1_version_info.setText(f'版本信息 : {var.SRF_INFO['VERSION']['VERSION_INDEX']} - {var.SRF_INFO['VERSION']['UPDATE_TIME']}')  # 版本信息
-            self.lb_index_1_github_link.setText(f'<a href="{var.SRF_INFO['PATH']['GITHUB_REPO_URL']}">项目地址 : {var.SRF_INFO['PATH']['GITHUB_REPO_URL'].split('/')[-1]}</a>')  # 项目地址
-            self.lb_index_1_github_link.setOpenExternalLinks(True)  # 激活超链接
+            else:  # 校验不通过
+                if QMessageBox.question(self , 'SRF-错误' , 'JSON文件校验失败 , 请检查JSON文件是否完整或已损坏。\n是否尝试重新读取 ?' , QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:  # 用户选择是 重载
+                    self.LoadRegeditInfo()
+                else:  # 用户选择否 退出
+                    self.__quit()
+                    
+        except Exception as e:  # 发生错误 退出
+            QMessageBox.critical(self , 'SRF-错误' , f'JSON文件读取失败 , 请检查JSON文件是否完整或已损坏。\n错误信息 : {e}')
+            self.__quit()
 
-        else:  # 校验不通过
-            if QMessageBox.question(self , 'SRF-错误' , 'JSON文件校验失败 , 请检查JSON文件是否完整或已损坏。\n是否尝试重新读取 ?' , QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:  # 用户选择是 重载
-                self.LoadRegeditInfo()
-            else:  # 用户选择否 退出
-                pass
-
-
+    # 退出
+    def __quit(self) -> None:
+        sys.exit(0)
 
 
 class sfr_var():  # 变量空间
