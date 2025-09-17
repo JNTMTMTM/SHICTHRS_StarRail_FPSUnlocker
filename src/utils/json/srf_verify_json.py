@@ -8,6 +8,7 @@ def verify_sac_jfp_order(data : dict) -> None:
     try:
         temp_dict : dict = deepcopy(data) 
 
+        # 初始化json指纹
         jsp = None
 
         # 加载json指纹
@@ -22,12 +23,11 @@ def verify_sac_jfp_order(data : dict) -> None:
                     hash_function = hash_functions.SHA256,
                     version = 1
                 )
-        # print(jsp , fingerprint)
+
         # 匹配指纹
         if jsp == fingerprint.split('$')[2]:
             return True
         else:
             return False
     except:
-
         return False
