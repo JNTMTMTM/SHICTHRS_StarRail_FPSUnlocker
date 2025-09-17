@@ -13,6 +13,9 @@
 import sys
 sys.path.append('..')
 import os
+from copy import deepcopy
+import winreg
+import json
 
 # 导入GUI框架
 from PySide6.QtWidgets import (QApplication , QMainWindow , QMessageBox)
@@ -23,7 +26,9 @@ from utils.unlocker.srf_fps_unlocker import srf_fps_unlocker
 # 导入json io方法
 from utils.json.srf_read_json import ReadJsonFile
 from utils.json.srf_verify_json import VerifySacJfpOrder
-from copy import deepcopy
+from utils.regedit.srf_regedit_io import ReadRegistryValue
+
+
 
 
 class sfr_gui(Ui_srf , QMainWindow):
@@ -43,6 +48,7 @@ class sfr_gui(Ui_srf , QMainWindow):
         self.LoadRegeditInfo()
 
         # 加载当前游戏FPS上限
+        self.LoadCurrentGameFPSLimit()
 
 
 
@@ -92,6 +98,38 @@ class sfr_gui(Ui_srf , QMainWindow):
             QMessageBox.critical(self , 'SRF-错误' , f'JSON文件读取失败 , 请检查JSON文件是否完整或已损坏。\n错误信息 : {e}')
             self.__quit()  # 退出方法
 
+    # 加载当前游戏FPS上限
+    def LoadCurrentGameFPSLimit(self) -> None:
+        try:
+            temp_value : dict = {}  # 创建临时加载空间
+            temp_format_value : dict = {}  # 创建临时格式化加载空间
+
+            temp_value = ReadRegistryValue(winreg.HKEY_CURRENT_USER , os.path.join(*var.SRF_INFO['PATH']['REGISTRY_KEY_PATH']) , var.SRF_INFO['PATH']['GRAPHICS_VALUE_NAME'])
+            temp_format_value = json.loads(temp_value.decode('utf-8').strip('\x00'))
+
+            var.SRF_REGEDIT_INFO = deepcopy(temp_format_value)
+            var.SRF_INFO['OTHERS']['CURRENT_FPS'] = deepcopy(var.SRF_REGEDIT_INFO['FPS'])
+
+            del temp_value  # 释放临时空间
+            del temp_format_value  # 释放临时格式化空间
+
+            # 向控件加载当前游戏FPS上限
+            self.lb_index_0_current_fps.setText(f'当前帧率 : {var.SRF_INFO['OTHERS']['CURRENT_FPS']}')  # 当前帧率
+
+            # 解锁控件
+            if var.SRF_INFO['OTHERS']['CURRENT_FPS'] != 120:  # 当前帧率不是120FPS
+                self.rb_index_0_unlock_120fps.setChecked(True)  # 默认选中120FPS
+            
+            else:  # 当前帧率已经为120FPS
+                self.rb_index_0_rlb_60fps.setChecked(True)  # 默认选中60FPS
+            
+            self.pbtn_index_0_unlock_fps.setEnabled(True)  # 解锁按钮可用
+    
+        except Exception as e:
+            QMessageBox.critical(self , 'SRF-错误' , f'注册表读取失败 , 请下载游戏或验证游戏目录完整性。\n错误信息 : {e}')
+            self.__quit()  # 退出方法
+
+
     # 退出
     def __quit(self) -> None:
         """
@@ -122,6 +160,7 @@ class sfr_var():  # 变量空间
     def __init__(self) -> None:
         self.PATH : str = os.getcwd()  # 当前路径
         self.SRF_INFO : dict = {}  # 软件信息
+        self.SRF_REGEDIT_INFO : dict = {}  # 注册表信息
 
 # 主函数
 if __name__ == '__main__':
