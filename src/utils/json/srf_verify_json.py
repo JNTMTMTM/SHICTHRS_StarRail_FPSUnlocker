@@ -4,7 +4,7 @@ import json
 import json_fingerprint
 from json_fingerprint import hash_functions
 
-def verify_sac_jfp_order(data : dict) -> None:
+def VerifySacJfpOrder(data : dict) -> None:
     try:
         temp_dict : dict = deepcopy(data) 
 
