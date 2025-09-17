@@ -3,4 +3,5 @@
 /.vscode
 *.exe
 *.bat
+*.pyc
 test.py
