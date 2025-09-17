@@ -1,0 +1,15 @@
+{
+    "VERSION": {
+        "VERSION_INDEX": "V0.0.0",
+        "UPDATE_TIME": "20250917"
+    },
+    "PATH": {
+        "REGISTRY_KEY_PATH": [
+            "SOFTWARE",
+            "miHoYo",
+            "崩坏：星穹铁道"
+        ],
+        "GRAPHICS_VALUE_NAME": "GraphicsSettings_Model_h2986158309"
+    },
+    "sac_jfp": "55785a1309868e82d85db4b999770b83c959ae03a4c5b5a56e1f3316ccaacdbc"
+}

@@ -28,9 +28,13 @@ class sfr_gui(Ui_srf , QMainWindow):
         self.__slot__()
         self.show()
 
+
+
     # 绑定槽函数
     def __slot__(self) -> None:
         pass
+
+    # 加载注册表信息
 
 
 
