@@ -25,6 +25,9 @@ class sfr_gui(Ui_srf , QMainWindow):
         self.setupUi(self)  
         self.show()
 
+    def __slot__(self) -> None:
+        pass
+
 
 
 
