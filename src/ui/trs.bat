@@ -1,0 +1,1 @@
+pyside6-uic sfr_ui.ui -o sfr_ui.py
