@@ -10,7 +10,11 @@
             "崩坏：星穹铁道"
         ],
         "GRAPHICS_VALUE_NAME": "GraphicsSettings_Model_h2986158309",
+        "GAME_PATH": [],
         "GITHUB_REPO_URL": "https://github.com/JNTMTMTM/SHICTHRS_StarRail_FPSUnlocker"
     },
-    "sac_jfp": "a36064136e2b02d45a3b2c1451ca142fe3a7d14f23c21c881e840f9abdf534e7"
+    "OTHERS": {
+        "CURRENT_FPS": ""
+    },
+    "sac_jfp": "9641ed7a6e91cf09520277b1089f612d5858e1d12b45041adced53312714fcb5"
 }

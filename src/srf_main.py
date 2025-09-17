@@ -83,17 +83,39 @@ class sfr_gui(Ui_srf , QMainWindow):
 
             else:  # 校验不通过
                 if QMessageBox.question(self , 'SRF-错误' , 'JSON文件校验失败 , 请检查JSON文件是否完整或已损坏。\n是否尝试重新读取 ?' , QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:  # 用户选择是 重载
-                    self.LoadRegeditInfo()
+                    self.LoadRegeditInfo()  # 重载方法
+
                 else:  # 用户选择否 退出
-                    self.__quit()
-                    
+                    self.__quit()  # 退出方法
+
         except Exception as e:  # 发生错误 退出
             QMessageBox.critical(self , 'SRF-错误' , f'JSON文件读取失败 , 请检查JSON文件是否完整或已损坏。\n错误信息 : {e}')
-            self.__quit()
+            self.__quit()  # 退出方法
 
     # 退出
     def __quit(self) -> None:
+        """
+        安全退出程序
+        -用于异常退出
+
+        param : None
+        return : None
+        """
         sys.exit(0)
+    
+    # 重写退出事件
+    def closeEvent(self, event) -> None:
+        """
+        重写退出事件
+        -当用户点击关闭按钮时 , 弹出提示框 , 询问是否退出
+
+        param : event
+        return : None
+        """
+        if QMessageBox.question(self, 'SRF-退出' , '是否退出 ?' , QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+            event.accept()
+        else:
+            event.ignore()
 
 
 class sfr_var():  # 变量空间
