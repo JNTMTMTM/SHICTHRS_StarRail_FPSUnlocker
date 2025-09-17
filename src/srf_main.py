@@ -73,22 +73,27 @@ class sfr_gui(Ui_srf , QMainWindow):
         if VerifySacJfpOrder(temp_dict):  # 校验通过
             var.SRF_INFO = deepcopy(temp_dict)
             del temp_dict  # 释放临时空间
+
             # 向控件加载软件信息
-            self.lb_index_0_regedit_path.setText('注册表路径 : ' + os.path.join(*var.SRF_INFO['PATH']['REGISTRY_KEY_PATH']))
-            self.lb_index_0_graphics_index.setText('图形设置引导 : ' + var.SRF_INFO['PATH']['GRAPHICS_VALUE_NAME'])
-            self.lb_index_1_version_info.setText(f'版本信息 : {var.SRF_INFO['VERSION']['VERSION_INDEX']} - {var.SRF_INFO['VERSION']['UPDATE_TIME']}')
-            self.lb_index_1_github_link.setText(f'<a href="{var.SRF_INFO['PATH']['GITHUB_REPO_URL']}">项目地址 : {var.SRF_INFO['PATH']['GITHUB_REPO_URL'].split('/')[-1]}</a>')
+            self.lb_index_0_regedit_path.setText('注册表路径 : ' + os.path.join(*var.SRF_INFO['PATH']['REGISTRY_KEY_PATH']))  # 注册表路径
+            self.lb_index_0_graphics_index.setText('图形设置引导 : ' + var.SRF_INFO['PATH']['GRAPHICS_VALUE_NAME'])  # 图形设置引导
+            self.lb_index_1_version_info.setText(f'版本信息 : {var.SRF_INFO['VERSION']['VERSION_INDEX']} - {var.SRF_INFO['VERSION']['UPDATE_TIME']}')  # 版本信息
+            self.lb_index_1_github_link.setText(f'<a href="{var.SRF_INFO['PATH']['GITHUB_REPO_URL']}">项目地址 : {var.SRF_INFO['PATH']['GITHUB_REPO_URL'].split('/')[-1]}</a>')  # 项目地址
             self.lb_index_1_github_link.setOpenExternalLinks(True)  # 激活超链接
 
-
-
         else:  # 校验不通过
-            pass
+            if QMessageBox.question(self , 'SRF-错误' , 'JSON文件校验失败 , 请检查JSON文件是否完整或已损坏。\n是否尝试重新读取 ?' , QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:  # 用户选择是 重载
+                self.LoadRegeditInfo()
+            else:  # 用户选择否 退出
+                pass
 
-class sfr_var():
+
+
+
+class sfr_var():  # 变量空间
     def __init__(self) -> None:
-        self.PATH : str = os.getcwd()
-        self.SRF_INFO : dict = {}
+        self.PATH : str = os.getcwd()  # 当前路径
+        self.SRF_INFO : dict = {}  # 软件信息
 
 # 主函数
 if __name__ == '__main__':

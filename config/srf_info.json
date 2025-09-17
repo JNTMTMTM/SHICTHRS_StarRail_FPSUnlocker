@@ -1,1 +1,16 @@
-{"VERSION": {"VERSION_INDEX": "V0.0.0", "UPDATE_TIME": "20250917"}, "PATH": {"REGISTRY_KEY_PATH": ["SOFTWARE", "miHoYo", "崩坏：星穹铁道"], "GRAPHICS_VALUE_NAME": "GraphicsSettings_Model_h2986158309", "GITHUB_REPO_URL": "https://github.com/JNTMTMTM/SHICTHRS_StarRail_FPSUnlocker"}, "sac_jfp": "a36064136e2b02d45a3b2c1451ca142fe3a7d14f23c21c881e840f9abdf534e7"}
+{
+    "VERSION": {
+        "VERSION_INDEX": "V0.0.0",
+        "UPDATE_TIME": "20250917"
+    },
+    "PATH": {
+        "REGISTRY_KEY_PATH": [
+            "SOFTWARE",
+            "miHoYo",
+            "崩坏：星穹铁道"
+        ],
+        "GRAPHICS_VALUE_NAME": "GraphicsSettings_Model_h2986158309",
+        "GITHUB_REPO_URL": "https://github.com/JNTMTMTM/SHICTHRS_StarRail_FPSUnlocker"
+    },
+    "sac_jfp": "a36064136e2b02d45a3b2c1451ca142fe3a7d14f23c21c881e840f9abdf534e7"
+}
