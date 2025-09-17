@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>SHICTHRS-SFR</string>
+   <string>SHICTHRS-SRF</string>
   </property>
   <widget class="QTabWidget" name="tw_main">
    <property name="geometry">

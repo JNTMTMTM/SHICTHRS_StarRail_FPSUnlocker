@@ -84,7 +84,7 @@ class Ui_srf(object):
     # setupUi
 
     def retranslateUi(self, srf):
-        srf.setWindowTitle(QCoreApplication.translate("srf", u"SHICTHRS-SFR", None))
+        srf.setWindowTitle(QCoreApplication.translate("srf", u"SHICTHRS-SRF", None))
         self.pbtn_index_0_unlock_fps.setText(QCoreApplication.translate("srf", u"\u4e00\u952e\u89e3\u9501", None))
         self.lb_index_0_graphics_index.setText(QCoreApplication.translate("srf", u"\u56fe\u5f62\u8bbe\u7f6e\u5f15\u5bfc : \u7b49\u5f85\u52a0\u8f7d", None))
         self.lb_index_0_regedit_path.setText(QCoreApplication.translate("srf", u"\u6ce8\u518c\u8868\u8def\u5f84 : \u7b49\u5f85\u52a0\u8f7d", None))
