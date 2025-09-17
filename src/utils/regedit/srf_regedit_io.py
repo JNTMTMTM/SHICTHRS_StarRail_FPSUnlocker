@@ -2,30 +2,24 @@
 import winreg
 
 def ReadRegistryValue(key, sub_key, value_name) -> dict:
-    try:
-        # 打开键
-        registry_key = winreg.OpenKey(key, sub_key)
+    # 打开键
+    registry_key = winreg.OpenKey(key, sub_key)
 
-        # 读取键
-        value, _ = winreg.QueryValueEx(registry_key, value_name)
+    # 读取键
+    value, _ = winreg.QueryValueEx(registry_key, value_name)
 
-        # 关闭键
-        winreg.CloseKey(registry_key)
+    # 关闭键
+    winreg.CloseKey(registry_key)
 
-        # 返回键值
-        return value
+    # 返回键值
+    return value
 
-    except Exception as e:
-        raise Exception(f"Error reading registry value: {e}")
 
 def WriteRegistryValue(key , sub_key , value_name , data , mode) -> None:
-    try:
-        # 开启键
-        registry_key = winreg.CreateKey(key , sub_key)
-        # 修改键
-        winreg.SetValueEx(registry_key , value_name , 0 , mode , data)
-        # 关闭键
-        winreg.CloseKey(registry_key)
+    # 开启键
+    registry_key = winreg.CreateKey(key , sub_key)
+    # 修改键
+    winreg.SetValueEx(registry_key , value_name , 0 , mode , data)
+    # 关闭键
+    winreg.CloseKey(registry_key)
         
-    except Exception as e:
-        raise Exception(f"Error writing registry value: {e}")
