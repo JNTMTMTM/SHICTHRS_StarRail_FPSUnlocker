@@ -29,9 +29,7 @@ from utils.json.srf_verify_json import VerifySacJfpOrder
 from utils.regedit.srf_regedit_io import ReadRegistryValue
 
 
-
-
-class sfr_gui(Ui_srf , QMainWindow):
+class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
     # 初始化窗口
     def __init__(self) -> None:
         # 加载窗口
@@ -49,8 +47,6 @@ class sfr_gui(Ui_srf , QMainWindow):
 
         # 加载当前游戏FPS上限
         self.LoadCurrentGameFPSLimit()
-
-
 
     # 绑定槽函数
     def __slot__(self) -> None:
@@ -149,7 +145,7 @@ class sfr_gui(Ui_srf , QMainWindow):
 
         FUNC-LOADED -> LoadRegeditInfo
             [+] LoadCurrentGameFPSLimit
-            
+
         param : None
         return : None
         """
@@ -169,7 +165,6 @@ class sfr_gui(Ui_srf , QMainWindow):
         
         self.LoadRegeditInfo()
         self.LoadCurrentGameFPSLimit()
-        
 
     # 退出
     def __quit(self) -> None:
@@ -181,7 +176,7 @@ class sfr_gui(Ui_srf , QMainWindow):
         return : None
         """
         sys.exit(0)
-    
+
     # 重写退出事件
     def closeEvent(self, event) -> None:
         """
