@@ -1,7 +1,7 @@
 {
     "VERSION": {
-        "VERSION_INDEX": "V1.0.0",
-        "UPDATE_TIME": "202509172059"
+        "VERSION_INDEX": "V1.0.1",
+        "UPDATE_TIME": "202509181446"
     },
     "PATH": {
         "REGISTRY_KEY_PATH": [
@@ -25,5 +25,5 @@
     "OTHERS": {
         "CURRENT_FPS": ""
     },
-    "sac_jfp": "bbaeb27d15735a09f1624ae897073a07645f6befc7593062322fcbf7a0265127"
+    "sac_jfp": "4a7aaeb8055e1088f80be63afa78f7595ef2a3c17f8908fc175e36a30820013a"
 }
