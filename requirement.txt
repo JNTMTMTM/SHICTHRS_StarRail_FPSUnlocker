@@ -5,3 +5,4 @@ PySide6_Essentials==6.9.2
 shiboken6==6.9.2
 pywin32==311
 pywin32-ctypes==0.2.3
+psutil==7.1.0
