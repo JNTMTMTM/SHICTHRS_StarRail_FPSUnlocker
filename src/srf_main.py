@@ -17,6 +17,7 @@ import os
 from copy import deepcopy
 import winreg
 import json
+import threading
 from win32api import GetShortPathName
 
 # 导入GUI框架
@@ -223,9 +224,12 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
         param : None
         return : None
         """
+        def LaunchGame(game_path : str) -> None:  # 启动游戏
+            os.system(game_path)   
+
         try:
             temp_path : str = GetShortPathName(os.path.join(*var.SRF_INFO['PATH']['GAME_PATH']))  # 获取短路径名称
-            os.system(temp_path)  # 启动游戏
+            threading.Thread(target = LaunchGame , args = (temp_path,)).start()
             
         except Exception as e:
             QMessageBox.critical(self , 'SRF-错误' , f'游戏启动失败 , 请检查游戏目录完整性。\n错误信息 : {e}')
