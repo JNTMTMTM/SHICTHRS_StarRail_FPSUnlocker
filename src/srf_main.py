@@ -183,6 +183,8 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
         param : None
         return : None
         """
+        # 检查游戏是否在运行
+        
         if self.rb_index_0_unlock_120fps.isChecked():  # 用户选择120FPS
             try:
                 SrfFpsUnlocker(var , 120)
