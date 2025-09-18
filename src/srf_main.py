@@ -70,6 +70,7 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
         self.pbtn_index_0_unlock_fps.clicked.connect(self.__res_pbtn_index_0_unlock_fps)
         self.pbtn_index_1_start_game.clicked.connect(self.__res_pbtn_index_1_start_game)
         self.pbtn_index_1_restart_system.clicked.connect(self.__res_pbtn_index_1_restart_system)
+        self.pbtn_index_1_quit.clicked.connect(self.__res_pbtn_index_1_quit)
 
     # 加载软件信息
     def LoadRegeditInfo(self) -> None:
@@ -257,7 +258,19 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
                     os.system("shutdown /r /t 1")
                 except Exception as e:
                     QMessageBox.critical(self , 'SRF-错误' , f'系统重启失败 , 请检查系统权限。\n错误信息 : {e}')
+    
+    # 响应 pbtn_index_1_quit 点击信号 退出程序
+    def __res_pbtn_index_1_quit(self) -> None:
+        """
+        响应 pbtn_index_1_quit 点击信号 <-> 退出程序
         
+        FUNC-LOADED -> __quit
+        
+        param : None
+        return : None
+        """
+        if QMessageBox.question(self, 'SRF-退出' , '是否退出 ?' , QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:  # 用户选择退出
+            self.__quit()  # 退出方法
 
     # 退出
     def __quit(self) -> None:
@@ -268,8 +281,11 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
         param : None
         return : None
         """
-        if self.game_thread.is_alive():  # 游戏线程正在运行
-            QMessageBox.information(self , 'SRF-提示' , '存在正在运行中的游戏 , 请稍后重试。')
+        if hasattr(self , 'game_thread'):  # 游戏线程存在
+            if self.game_thread.is_alive():  # 游戏线程正在运行
+                QMessageBox.information(self , 'SRF-提示' , '存在正在运行中的游戏 , 请稍后重试。')
+            else:
+                sys.exit(0)
         else:
             sys.exit(0)
 
@@ -283,9 +299,12 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
         return : None
         """
         if QMessageBox.question(self, 'SRF-退出' , '是否退出 ?' , QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
-            if self.game_thread.is_alive():  # 游戏线程正在运行
-                QMessageBox.information(self , 'SRF-提示' , '存在正在运行中的游戏 , 请稍后重试。')
-                event.ignore()
+            if hasattr(self , 'game_thread'):  # 游戏线程存在
+                if self.game_thread.is_alive():  # 游戏线程正在运行
+                    QMessageBox.information(self , 'SRF-提示' , '存在正在运行中的游戏 , 请稍后重试。')
+                    event.ignore()
+                else:
+                    event.accept()
             else:
                 event.accept()
         else:
