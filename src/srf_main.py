@@ -45,6 +45,9 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
         # 加载软件信息
         self.LoadRegeditInfo()
 
+        # 加载游戏路径
+        self.LoadGamePathInfo()
+
         # 加载当前游戏FPS上限
         self.LoadCurrentGameFPSLimit()
 
@@ -94,6 +97,26 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
             QMessageBox.critical(self , 'SRF-错误' , f'JSON文件读取失败 , 请检查JSON文件是否完整或已损坏。\n错误信息 : {e}')
             self.__quit()  # 退出方法
 
+    # 读取游戏路径
+    def LoadGamePathInfo(self) -> None:
+        """
+        读取游戏路径(ALV-JSON) <-> SAC_JFP VERIFICATION
+        temp_value -> var.SRF_INFO(DC)
+        """
+        # 从注册表中读取键值
+        temp_path : str = ''  # 临时路径
+        temp_path = ReadRegistryValue(
+            winreg.HKEY_CURRENT_USER ,  # 从当前用户的注册表路径中读取
+            os.path.join(*var.SRF_INFO['PATH']['GAME_REGISTRY_KEY_PATH']) ,        # 注册表的具体路径
+            var.SRF_INFO['PATH']['GAME_VALUE_NAME']       # 需要读取的键值名称
+        )
+        temp_path = temp_path.split('\\')  # 分割路径
+        temp_path.append(var.SRF_INFO['PATH']['GAME_NAME'])  # 添加游戏名称
+
+        var.SRF_INFO['PATH']['GAME_VALUE_NAME'] = deepcopy(temp_path)
+        
+        del temp_path  # 释放临时空间
+        
     # 加载当前游戏FPS上限
     def LoadCurrentGameFPSLimit(self) -> None:
         """
@@ -113,7 +136,11 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
             temp_value : dict = {}  # 创建临时加载空间
             temp_format_value : dict = {}  # 创建临时格式化加载空间
 
-            temp_value = ReadRegistryValue(winreg.HKEY_CURRENT_USER , os.path.join(*var.SRF_INFO['PATH']['REGISTRY_KEY_PATH']) , var.SRF_INFO['PATH']['GRAPHICS_VALUE_NAME'])
+            temp_value = ReadRegistryValue(
+                winreg.HKEY_CURRENT_USER ,
+                os.path.join(*var.SRF_INFO['PATH']['REGISTRY_KEY_PATH']) ,
+                var.SRF_INFO['PATH']['GRAPHICS_VALUE_NAME']
+                )
             temp_format_value = json.loads(temp_value.decode('utf-8').strip('\x00'))
 
             var.SRF_REGEDIT_INFO = deepcopy(temp_format_value)
