@@ -10,12 +10,15 @@
 # 算法诠释一切 质疑即是认可
 # Algorithms = rule ; Questioning = approval
 
+from multiprocessing import current_process
 import sys
 sys.path.append('..')
 import os
 from copy import deepcopy
 import winreg
 import json
+import threading
+from win32api import GetShortPathName
 
 # 导入GUI框架
 from PySide6.QtWidgets import (QApplication , QMainWindow , QMessageBox)
@@ -23,10 +26,13 @@ from PySide6 import QtGui
 from ui.sfr_ui import Ui_srf
 # 导入解锁方法
 from utils.unlocker.srf_fps_unlocker import SrfFpsUnlocker
+from utils.unlocker.sfr_processes_scanner import GetAllProcesses
 # 导入json io方法
 from utils.json.srf_read_json import ReadJsonFile
 from utils.json.srf_verify_json import VerifySacJfpOrder
 from utils.regedit.srf_regedit_io import ReadRegistryValue
+# 导入系统进程扫描器
+
 
 
 class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
@@ -34,7 +40,10 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
     def __init__(self) -> None:
         # 加载窗口
         super().__init__()
-        self.setupUi(self)  
+        self.setupUi(self) 
+        
+        # 设置窗口固定大小
+        self.setFixedSize(379 , 149)
 
         # 绑定槽函数
         self.__slot__()
@@ -45,12 +54,23 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
         # 加载软件信息
         self.LoadRegeditInfo()
 
-        # 加载当前游戏FPS上限
-        self.LoadCurrentGameFPSLimit()
+        # 加载游戏路径
+        self.LoadGamePathInfo()
+
+        if os.path.exists(os.path.join(*var.SRF_INFO['PATH']['GAME_PATH'])):  # 游戏目录存在
+            # 加载当前游戏FPS上限
+            self.LoadCurrentGameFPSLimit()
+        
+        else:  # 游戏目录不存在
+            QMessageBox.critical(self , 'SRF-错误' , '游戏目录不存在 , 请下载游戏或验证游戏目录完整性。')
+            self.__quit()  # 退出方法
 
     # 绑定槽函数
     def __slot__(self) -> None:
         self.pbtn_index_0_unlock_fps.clicked.connect(self.__res_pbtn_index_0_unlock_fps)
+        self.pbtn_index_1_start_game.clicked.connect(self.__res_pbtn_index_1_start_game)
+        self.pbtn_index_1_restart_system.clicked.connect(self.__res_pbtn_index_1_restart_system)
+        self.pbtn_index_1_quit.clicked.connect(self.__res_pbtn_index_1_quit)
 
     # 加载软件信息
     def LoadRegeditInfo(self) -> None:
@@ -94,6 +114,26 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
             QMessageBox.critical(self , 'SRF-错误' , f'JSON文件读取失败 , 请检查JSON文件是否完整或已损坏。\n错误信息 : {e}')
             self.__quit()  # 退出方法
 
+    # 读取游戏路径
+    def LoadGamePathInfo(self) -> None:
+        """
+        读取游戏路径(ALV-JSON) <-> SAC_JFP VERIFICATION
+        temp_value -> var.SRF_INFO(DC)
+        """
+        # 从注册表中读取键值
+        temp_path : str = ''  # 临时路径
+        temp_path = ReadRegistryValue(
+            winreg.HKEY_CURRENT_USER ,  # 从当前用户的注册表路径中读取
+            os.path.join(*var.SRF_INFO['PATH']['GAME_REGISTRY_KEY_PATH']) ,        # 注册表的具体路径
+            var.SRF_INFO['PATH']['GAME_VALUE_NAME']       # 需要读取的键值名称
+        )
+        temp_path = temp_path.split('\\')  # 分割路径
+        temp_path.append(var.SRF_INFO['PATH']['GAME_NAME'])  # 添加游戏名称
+
+        var.SRF_INFO['PATH']['GAME_PATH'] = deepcopy(temp_path)
+        
+        del temp_path  # 释放临时空间
+    
     # 加载当前游戏FPS上限
     def LoadCurrentGameFPSLimit(self) -> None:
         """
@@ -113,7 +153,11 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
             temp_value : dict = {}  # 创建临时加载空间
             temp_format_value : dict = {}  # 创建临时格式化加载空间
 
-            temp_value = ReadRegistryValue(winreg.HKEY_CURRENT_USER , os.path.join(*var.SRF_INFO['PATH']['REGISTRY_KEY_PATH']) , var.SRF_INFO['PATH']['GRAPHICS_VALUE_NAME'])
+            temp_value = ReadRegistryValue(
+                winreg.HKEY_CURRENT_USER ,
+                os.path.join(*var.SRF_INFO['PATH']['REGISTRY_KEY_PATH']) ,
+                var.SRF_INFO['PATH']['GRAPHICS_VALUE_NAME']
+                )
             temp_format_value = json.loads(temp_value.decode('utf-8').strip('\x00'))
 
             var.SRF_REGEDIT_INFO = deepcopy(temp_format_value)
@@ -145,26 +189,88 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
 
         FUNC-LOADED -> LoadRegeditInfo
             [+] LoadCurrentGameFPSLimit
+            [+] GetAllProcesses
 
         param : None
         return : None
         """
-        if self.rb_index_0_unlock_120fps.isChecked():  # 用户选择120FPS
-            try:
-                SrfFpsUnlocker(var , 120)
-                QMessageBox.information(self , 'SRF-提示' , 'FPS解锁成功 , 重启游戏生效。')
-            except Exception as e:
-                QMessageBox.critical(self , 'SRF-错误' , f'FPS解锁失败 , 请检查游戏目录完整性。\n错误信息 : {e}')
-
-        else:  # 用户选择60FPS
-            try:
-                SrfFpsUnlocker(var , 60)
-                QMessageBox.information(self , 'SRF-提示' , 'FPS回滚成功 , 重启游戏生效。')
-            except Exception as e:
-                QMessageBox.critical(self , 'SRF-错误' , f'FPS回滚失败 , 请检查游戏目录完整性。\n错误信息 : {e}')
+        # 检查游戏是否在运行
+        current_process_list : list = GetAllProcesses()  # 获取当前进程列表
+        if not var.SRF_INFO['PATH']['GAME_NAME'] in current_process_list:  # 游戏不在运行
         
-        self.LoadRegeditInfo()
-        self.LoadCurrentGameFPSLimit()
+            if self.rb_index_0_unlock_120fps.isChecked():  # 用户选择120FPS
+                try:
+                    SrfFpsUnlocker(var , 120)
+                    QMessageBox.information(self , 'SRF-提示' , 'FPS解锁成功 , 重启游戏生效。')
+                except Exception as e:
+                    QMessageBox.critical(self , 'SRF-错误' , f'FPS解锁失败 , 请检查游戏目录完整性。\n错误信息 : {e}')
+
+            else:  # 用户选择60FPS
+                try:
+                    SrfFpsUnlocker(var , 60)
+                    QMessageBox.information(self , 'SRF-提示' , 'FPS回滚成功 , 重启游戏生效。')
+                except Exception as e:
+                    QMessageBox.critical(self , 'SRF-错误' , f'FPS回滚失败 , 请检查游戏目录完整性。\n错误信息 : {e}')
+            
+            self.LoadRegeditInfo()
+            self.LoadGamePathInfo()
+            self.LoadCurrentGameFPSLimit()
+        
+        else:  # 游戏在运行
+            QMessageBox.warning(self , 'SRF-警告' , '游戏正在运行 , 请先关闭游戏后再进行操作。')
+
+    # 响应 pbtn_index_1_start_game 点击信号 启动游戏
+    def __res_pbtn_index_1_start_game(self) -> None:
+        """
+        响应 pbtn_index_1_start_game(Win32api) 点击信号 <-> 启动游戏
+
+        FUNC-LOADED -> GetShortPathName
+
+        param : None
+        return : None
+        """
+        def LaunchGame(game_path : str) -> None:  # 启动游戏
+            os.system(game_path)   
+
+        try:
+            temp_path : str = GetShortPathName(os.path.join(*var.SRF_INFO['PATH']['GAME_PATH']))  # 获取短路径名称
+            self.game_thread = threading.Thread(target = LaunchGame , args = (temp_path,))
+            self.game_thread.start()
+            
+        except Exception as e:
+            QMessageBox.critical(self , 'SRF-错误' , f'游戏启动失败 , 请检查游戏目录完整性。\n错误信息 : {e}')
+
+    # 响应 pbtn_index_1_restart_system 点击信号 重启系统
+    def __res_pbtn_index_1_restart_system(self) -> None:
+        """
+        响应 pbtn_index_1_restart_system 点击信号 <-> 重启系统
+        
+        FUNC-LOADED -> None
+
+        param : None
+        return : None
+        """
+        if QMessageBox.question(self, 'SRF-重启' , '是否重启系统 ?' , QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+            if self.game_thread.is_alive():  # 游戏线程正在运行
+                QMessageBox.information(self , 'SRF-提示' , '存在正在运行中的游戏 , 请稍后重试。')
+            else:
+                try:
+                    os.system("shutdown /r /t 1")
+                except Exception as e:
+                    QMessageBox.critical(self , 'SRF-错误' , f'系统重启失败 , 请检查系统权限。\n错误信息 : {e}')
+    
+    # 响应 pbtn_index_1_quit 点击信号 退出程序
+    def __res_pbtn_index_1_quit(self) -> None:
+        """
+        响应 pbtn_index_1_quit 点击信号 <-> 退出程序
+        
+        FUNC-LOADED -> __quit
+        
+        param : None
+        return : None
+        """
+        if QMessageBox.question(self, 'SRF-退出' , '是否退出 ?' , QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:  # 用户选择退出
+            self.__quit()  # 退出方法
 
     # 退出
     def __quit(self) -> None:
@@ -175,7 +281,13 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
         param : None
         return : None
         """
-        sys.exit(0)
+        if hasattr(self , 'game_thread'):  # 游戏线程存在
+            if self.game_thread.is_alive():  # 游戏线程正在运行
+                QMessageBox.information(self , 'SRF-提示' , '存在正在运行中的游戏 , 请稍后重试。')
+            else:
+                sys.exit(0)
+        else:
+            sys.exit(0)
 
     # 重写退出事件
     def closeEvent(self, event) -> None:
@@ -187,10 +299,16 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
         return : None
         """
         if QMessageBox.question(self, 'SRF-退出' , '是否退出 ?' , QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
-            event.accept()
+            if hasattr(self , 'game_thread'):  # 游戏线程存在
+                if self.game_thread.is_alive():  # 游戏线程正在运行
+                    QMessageBox.information(self , 'SRF-提示' , '存在正在运行中的游戏 , 请稍后重试。')
+                    event.ignore()
+                else:
+                    event.accept()
+            else:
+                event.accept()
         else:
             event.ignore()
-
 
 class sfr_var():  # 变量空间
     def __init__(self) -> None:

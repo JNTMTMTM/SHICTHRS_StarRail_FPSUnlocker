@@ -1,1 +1,29 @@
-{"VERSION": {"VERSION_INDEX": "V1.0.0", "UPDATE_TIME": "202509172059"}, "PATH": {"REGISTRY_KEY_PATH": ["SOFTWARE", "miHoYo", "崩坏：星穹铁道"], "GRAPHICS_VALUE_NAME": "GraphicsSettings_Model_h2986158309", "GAME_PATH": [], "GITHUB_REPO_URL": "https://github.com/JNTMTMTM/SHICTHRS_StarRail_FPSUnlocker"}, "OTHERS": {"CURRENT_FPS": ""}, "sac_jfp": "d0041331e5103dadb1df24c6b043eaa3ba5451cbba3769aa75917441f1de2295"}
+{
+    "VERSION": {
+        "VERSION_INDEX": "V1.0.0",
+        "UPDATE_TIME": "202509172059"
+    },
+    "PATH": {
+        "REGISTRY_KEY_PATH": [
+            "SOFTWARE",
+            "miHoYo",
+            "崩坏：星穹铁道"
+        ],
+        "GRAPHICS_VALUE_NAME": "GraphicsSettings_Model_h2986158309",
+        "GAME_REGISTRY_KEY_PATH": [
+            "Software",
+            "miHoYo",
+            "HYP",
+            "1_1",
+            "hkrpg_cn"
+        ],
+        "GAME_VALUE_NAME": "GameInstallPath",
+        "GAME_NAME": "StarRail.exe",
+        "GAME_PATH": [],
+        "GITHUB_REPO_URL": "https://github.com/JNTMTMTM/SHICTHRS_StarRail_FPSUnlocker"
+    },
+    "OTHERS": {
+        "CURRENT_FPS": ""
+    },
+    "sac_jfp": "bbaeb27d15735a09f1624ae897073a07645f6befc7593062322fcbf7a0265127"
+}
