@@ -16,6 +16,7 @@ import os
 from copy import deepcopy
 import winreg
 import json
+from win32api import GetShortPathName
 
 # 导入GUI框架
 from PySide6.QtWidgets import (QApplication , QMainWindow , QMessageBox)
@@ -48,7 +49,7 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
         # 加载游戏路径
         self.LoadGamePathInfo()
 
-        if os.path.exists(os.path.join(*var.SRF_INFO['PATH']['GAME_VALUE_NAME'])):  # 游戏目录存在
+        if os.path.exists(os.path.join(*var.SRF_INFO['PATH']['GAME_PATH'])):  # 游戏目录存在
             # 加载当前游戏FPS上限
             self.LoadCurrentGameFPSLimit()
         
@@ -59,6 +60,7 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
     # 绑定槽函数
     def __slot__(self) -> None:
         self.pbtn_index_0_unlock_fps.clicked.connect(self.__res_pbtn_index_0_unlock_fps)
+        self.pbtn_index_1_start_game.clicked.connect(self.__res_pbtn_index_1_start_game)
 
     # 加载软件信息
     def LoadRegeditInfo(self) -> None:
@@ -118,7 +120,7 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
         temp_path = temp_path.split('\\')  # 分割路径
         temp_path.append(var.SRF_INFO['PATH']['GAME_NAME'])  # 添加游戏名称
 
-        var.SRF_INFO['PATH']['GAME_VALUE_NAME'] = deepcopy(temp_path)
+        var.SRF_INFO['PATH']['GAME_PATH'] = deepcopy(temp_path)
         
         del temp_path  # 释放临时空间
     
@@ -196,7 +198,25 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
                 QMessageBox.critical(self , 'SRF-错误' , f'FPS回滚失败 , 请检查游戏目录完整性。\n错误信息 : {e}')
         
         self.LoadRegeditInfo()
+        self.LoadGamePathInfo()
         self.LoadCurrentGameFPSLimit()
+
+    # 响应 pbtn_index_1_start_game 点击信号 启动游戏
+    def __res_pbtn_index_1_start_game(self) -> None:
+        """
+        响应 pbtn_index_1_start_game(Win32api) 点击信号 <-> 启动游戏
+
+        FUNC-LOADED -> None
+
+        param : None
+        return : None
+        """
+        try:
+            temp_path : str = GetShortPathName(os.path.join(*var.SRF_INFO['PATH']['GAME_PATH']))  # 获取短路径名称
+            os.system(temp_path)  # 启动游戏
+            
+        except Exception as e:
+            QMessageBox.critical(self , 'SRF-错误' , f'游戏启动失败 , 请检查游戏目录完整性。\n错误信息 : {e}')
 
     # 退出
     def __quit(self) -> None:
