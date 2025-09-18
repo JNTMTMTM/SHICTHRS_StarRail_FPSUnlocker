@@ -40,7 +40,10 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
     def __init__(self) -> None:
         # 加载窗口
         super().__init__()
-        self.setupUi(self)  
+        self.setupUi(self) 
+        
+        # 设置窗口固定大小
+        self.setFixedSize(379 , 149)
 
         # 绑定槽函数
         self.__slot__()
@@ -268,7 +271,6 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
                 event.accept()
         else:
             event.ignore()
-
 
 class sfr_var():  # 变量空间
     def __init__(self) -> None:
