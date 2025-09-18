@@ -219,7 +219,7 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
         """
         响应 pbtn_index_1_start_game(Win32api) 点击信号 <-> 启动游戏
 
-        FUNC-LOADED -> None
+        FUNC-LOADED -> GetShortPathName
 
         param : None
         return : None
@@ -229,7 +229,8 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
 
         try:
             temp_path : str = GetShortPathName(os.path.join(*var.SRF_INFO['PATH']['GAME_PATH']))  # 获取短路径名称
-            threading.Thread(target = LaunchGame , args = (temp_path,)).start()
+            self.game_thread = threading.Thread(target = LaunchGame , args = (temp_path,))
+            self.game_thread.start()
             
         except Exception as e:
             QMessageBox.critical(self , 'SRF-错误' , f'游戏启动失败 , 请检查游戏目录完整性。\n错误信息 : {e}')
@@ -243,7 +244,12 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
         param : None
         return : None
         """
-        sys.exit(0)
+        if self.game_thread.is_alive():  # 游戏线程正在运行
+            QMessageBox.information(self , 'SRF-提示' , '存在正在运行中的游戏 , 请稍后重试。')
+            self.game_thread.join()  # 等待游戏线程结束
+            sys.exit(0)
+        else:
+            sys.exit(0)
 
     # 重写退出事件
     def closeEvent(self, event) -> None:
@@ -255,7 +261,11 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
         return : None
         """
         if QMessageBox.question(self, 'SRF-退出' , '是否退出 ?' , QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
-            event.accept()
+            if self.game_thread.is_alive():  # 游戏线程正在运行
+                QMessageBox.information(self , 'SRF-提示' , '存在正在运行中的游戏 , 请稍后重试。')
+                event.ignore()
+            else:
+                event.accept()
         else:
             event.ignore()
 
