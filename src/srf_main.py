@@ -69,6 +69,7 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
     def __slot__(self) -> None:
         self.pbtn_index_0_unlock_fps.clicked.connect(self.__res_pbtn_index_0_unlock_fps)
         self.pbtn_index_1_start_game.clicked.connect(self.__res_pbtn_index_1_start_game)
+        self.pbtn_index_1_restart_system.clicked.connect(self.__res_pbtn_index_1_restart_system)
 
     # 加载软件信息
     def LoadRegeditInfo(self) -> None:
@@ -238,6 +239,26 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
         except Exception as e:
             QMessageBox.critical(self , 'SRF-错误' , f'游戏启动失败 , 请检查游戏目录完整性。\n错误信息 : {e}')
 
+    # 响应 pbtn_index_1_restart_system 点击信号 重启系统
+    def __res_pbtn_index_1_restart_system(self) -> None:
+        """
+        响应 pbtn_index_1_restart_system 点击信号 <-> 重启系统
+        
+        FUNC-LOADED -> None
+
+        param : None
+        return : None
+        """
+        if QMessageBox.question(self, 'SRF-重启' , '是否重启系统 ?' , QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+            if self.game_thread.is_alive():  # 游戏线程正在运行
+                QMessageBox.information(self , 'SRF-提示' , '存在正在运行中的游戏 , 请稍后重试。')
+            else:
+                try:
+                    os.system("shutdown /r /t 1")
+                except Exception as e:
+                    QMessageBox.critical(self , 'SRF-错误' , f'系统重启失败 , 请检查系统权限。\n错误信息 : {e}')
+        
+
     # 退出
     def __quit(self) -> None:
         """
@@ -249,8 +270,6 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
         """
         if self.game_thread.is_alive():  # 游戏线程正在运行
             QMessageBox.information(self , 'SRF-提示' , '存在正在运行中的游戏 , 请稍后重试。')
-            self.game_thread.join()  # 等待游戏线程结束
-            sys.exit(0)
         else:
             sys.exit(0)
 
