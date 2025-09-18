@@ -10,6 +10,7 @@
 # 算法诠释一切 质疑即是认可
 # Algorithms = rule ; Questioning = approval
 
+from multiprocessing import current_process
 import sys
 sys.path.append('..')
 import os
@@ -24,10 +25,13 @@ from PySide6 import QtGui
 from ui.sfr_ui import Ui_srf
 # 导入解锁方法
 from utils.unlocker.srf_fps_unlocker import SrfFpsUnlocker
+from utils.unlocker.sfr_processes_scanner import GetAllProcesses
 # 导入json io方法
 from utils.json.srf_read_json import ReadJsonFile
 from utils.json.srf_verify_json import VerifySacJfpOrder
 from utils.regedit.srf_regedit_io import ReadRegistryValue
+# 导入系统进程扫描器
+
 
 
 class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
@@ -179,29 +183,35 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
 
         FUNC-LOADED -> LoadRegeditInfo
             [+] LoadCurrentGameFPSLimit
+            [+] GetAllProcesses
 
         param : None
         return : None
         """
         # 检查游戏是否在运行
+        current_process_list : list = GetAllProcesses()  # 获取当前进程列表
+        if not var.SRF_INFO['PATH']['GAME_NAME'] in current_process_list:  # 游戏不在运行
         
-        if self.rb_index_0_unlock_120fps.isChecked():  # 用户选择120FPS
-            try:
-                SrfFpsUnlocker(var , 120)
-                QMessageBox.information(self , 'SRF-提示' , 'FPS解锁成功 , 重启游戏生效。')
-            except Exception as e:
-                QMessageBox.critical(self , 'SRF-错误' , f'FPS解锁失败 , 请检查游戏目录完整性。\n错误信息 : {e}')
+            if self.rb_index_0_unlock_120fps.isChecked():  # 用户选择120FPS
+                try:
+                    SrfFpsUnlocker(var , 120)
+                    QMessageBox.information(self , 'SRF-提示' , 'FPS解锁成功 , 重启游戏生效。')
+                except Exception as e:
+                    QMessageBox.critical(self , 'SRF-错误' , f'FPS解锁失败 , 请检查游戏目录完整性。\n错误信息 : {e}')
 
-        else:  # 用户选择60FPS
-            try:
-                SrfFpsUnlocker(var , 60)
-                QMessageBox.information(self , 'SRF-提示' , 'FPS回滚成功 , 重启游戏生效。')
-            except Exception as e:
-                QMessageBox.critical(self , 'SRF-错误' , f'FPS回滚失败 , 请检查游戏目录完整性。\n错误信息 : {e}')
+            else:  # 用户选择60FPS
+                try:
+                    SrfFpsUnlocker(var , 60)
+                    QMessageBox.information(self , 'SRF-提示' , 'FPS回滚成功 , 重启游戏生效。')
+                except Exception as e:
+                    QMessageBox.critical(self , 'SRF-错误' , f'FPS回滚失败 , 请检查游戏目录完整性。\n错误信息 : {e}')
+            
+            self.LoadRegeditInfo()
+            self.LoadGamePathInfo()
+            self.LoadCurrentGameFPSLimit()
         
-        self.LoadRegeditInfo()
-        self.LoadGamePathInfo()
-        self.LoadCurrentGameFPSLimit()
+        else:  # 游戏在运行
+            QMessageBox.warning(self , 'SRF-警告' , '游戏正在运行 , 请先关闭游戏后再进行操作。')
 
     # 响应 pbtn_index_1_start_game 点击信号 启动游戏
     def __res_pbtn_index_1_start_game(self) -> None:
