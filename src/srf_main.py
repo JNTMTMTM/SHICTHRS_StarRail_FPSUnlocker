@@ -48,8 +48,13 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
         # 加载游戏路径
         self.LoadGamePathInfo()
 
-        # 加载当前游戏FPS上限
-        self.LoadCurrentGameFPSLimit()
+        if os.path.exists(os.path.join(*var.SRF_INFO['PATH']['GAME_VALUE_NAME'])):  # 游戏目录存在
+            # 加载当前游戏FPS上限
+            self.LoadCurrentGameFPSLimit()
+        
+        else:  # 游戏目录不存在
+            QMessageBox.critical(self , 'SRF-错误' , '游戏目录不存在 , 请下载游戏或验证游戏目录完整性。')
+            self.__quit()  # 退出方法
 
     # 绑定槽函数
     def __slot__(self) -> None:
@@ -116,7 +121,7 @@ class sfr_gui(Ui_srf , QMainWindow):  # 主窗口
         var.SRF_INFO['PATH']['GAME_VALUE_NAME'] = deepcopy(temp_path)
         
         del temp_path  # 释放临时空间
-        
+    
     # 加载当前游戏FPS上限
     def LoadCurrentGameFPSLimit(self) -> None:
         """
